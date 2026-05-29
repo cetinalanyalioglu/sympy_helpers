@@ -1,0 +1,35 @@
+---
+description: Project environment and development conventions for sympy-helpers
+alwaysApply: true
+---
+
+# sympy-helpers Project Conventions
+
+## Conda Environment
+
+Use the shared **conda environment `py310`** (Python 3.10) for all work in this repository.
+
+```bash
+conda activate py310
+pip install -e ".[dev]"
+```
+
+Do not create or rely on a local `.venv` for this project unless explicitly requested.
+
+## Package Layout
+
+- Source lives under `src/sympy_helpers/`
+- Install in editable mode from the project root: `pip install -e .`
+- Dev tools (Black, Flake8) are configured in `pyproject.toml`
+
+## Code Quality
+
+Run before committing:
+
+```bash
+black src tests
+flake8 src tests
+pytest
+```
+
+Black and Flake8 settings are in `pyproject.toml` (Flake8 reads `[tool.flake8]` via Flake8-pyproject).
