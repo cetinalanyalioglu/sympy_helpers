@@ -2,11 +2,22 @@
 
 import sympy as sp
 
-from sympy_helpers import __all__, create_mean_symbol, linearize
+from sympy_helpers import (
+    __all__,
+    create_mean_symbol,
+    create_perturbation_symbol,
+    get_coefficients_of,
+    linearize,
+)
 
 
 def test_public_api_exports() -> None:
-    assert set(__all__) == {"create_mean_symbol", "linearize"}
+    assert set(__all__) == {
+        "create_mean_symbol",
+        "create_perturbation_symbol",
+        "get_coefficients_of",
+        "linearize",
+    }
 
 
 def test_public_api_usage_from_readme() -> None:
@@ -14,7 +25,8 @@ def test_public_api_usage_from_readme() -> None:
     expr = x**2
 
     linearized = linearize(expr, [x])
-    mean_symbol = create_mean_symbol("mu_x")
+    mean_x = create_mean_symbol(x)
+    perturb_x = create_perturbation_symbol(x)
 
-    assert sp.simplify(linearized) == 0
-    assert mean_symbol.name == "mu_x"
+    assert linearized == 2 * mean_x * perturb_x
+    assert get_coefficients_of(2 * x + 1, [x])[x] == 2

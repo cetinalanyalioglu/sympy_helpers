@@ -32,5 +32,6 @@ from sympy_helpers import create_mean_symbol, linearize
 
 x = sp.Symbol("x")
 expr = x**2
-linearized = linearize(expr, [x])
+linearized = linearize(expr, [x])  # 2*\\overline{x}*x'
+mean_x = create_mean_symbol(x)
 ```

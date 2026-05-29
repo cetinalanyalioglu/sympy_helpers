@@ -1,44 +1,71 @@
 """Tests for expression linearization."""
 
+import pytest
 import sympy as sp
 
 from sympy_helpers.linearization import linearize
+from sympy_helpers.symbols import create_mean_symbol, create_perturbation_symbol
 
 
-def _assert_expr_equal(actual: sp.Expr, expected: sp.Expr) -> None:
-    assert sp.simplify(actual - expected) == 0
-
-
-def test_linearize_quadratic_at_origin_is_zero() -> None:
+def test_linearize_quadratic_returns_perturbation_terms_only() -> None:
     x = sp.Symbol("x")
+    x_bar = create_mean_symbol(x)
+    x_pert = create_perturbation_symbol(x)
 
     result = linearize(x**2, [x])
 
-    _assert_expr_equal(result, sp.Integer(0))
+    assert result == 2 * x_bar * x_pert
 
 
-def test_linearize_linear_expression_is_unchanged() -> None:
+def test_linearize_linear_expression_returns_constant_perturbation_slope() -> None:
     x = sp.Symbol("x")
-    expr = 3 * x + 5
+    x_pert = create_perturbation_symbol(x)
 
-    result = linearize(expr, [x])
+    result = linearize(3 * x + 5, [x])
 
-    _assert_expr_equal(result, expr)
+    assert result == 3 * x_pert
 
 
-def test_linearize_at_nonzero_operating_point() -> None:
+def test_linearize_includes_mean_value_when_requested() -> None:
     x = sp.Symbol("x")
-    operating_point = {x: sp.Integer(2)}
+    x_bar = create_mean_symbol(x)
+    x_pert = create_perturbation_symbol(x)
 
-    result = linearize(x**2, [x], operating_point=operating_point)
+    result = linearize(3 * x + 5, [x], remove_mean=False)
 
-    _assert_expr_equal(result, 4 * x - 4)
+    assert result == 3 * x_bar + 5 + 3 * x_pert
 
 
-def test_linearize_two_variables_at_operating_point() -> None:
+def test_linearize_two_variables_builds_sum_of_partial_derivatives() -> None:
     x, y = sp.symbols("x y")
-    operating_point = {x: sp.Integer(1), y: sp.Integer(2)}
+    x_bar = create_mean_symbol(x)
+    y_bar = create_mean_symbol(y)
+    x_pert = create_perturbation_symbol(x)
+    y_pert = create_perturbation_symbol(y)
 
-    result = linearize(x * y, [x, y], operating_point=operating_point)
+    result = linearize(x * y, [x, y])
 
-    _assert_expr_equal(result, 2 * x + y - 2)
+    assert result == y_bar * x_pert + x_bar * y_pert
+
+
+def test_linearize_strict_raises_for_missing_variable() -> None:
+    x, y = sp.symbols("x y")
+
+    with pytest.raises(ValueError):
+        linearize(x**2, [y], strict=True)
+
+
+def test_linearize_non_strict_warns_for_missing_variable() -> None:
+    x, y = sp.symbols("x y")
+
+    with pytest.warns(UserWarning, match="Variable y not found in expression"):
+        result = linearize(x**2, [y], strict=False)
+
+    assert result == 0
+
+
+def test_linearize_raises_for_non_symbol_variable() -> None:
+    x, y = sp.symbols("x y")
+
+    with pytest.raises(ValueError):
+        linearize(x * y, [x + y])
