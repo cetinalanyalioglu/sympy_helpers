@@ -26,6 +26,8 @@ pip install -e ".[dev]"
 
 ## Examples
 
+See the [examples notebook](examples/sympy_helpers_examples.ipynb) for walkthroughs of all public functions.
+
 ```python
 import sympy as sp
 from sympy_helpers import create_mean_symbol, linearize

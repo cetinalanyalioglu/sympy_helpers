@@ -14,7 +14,11 @@ from sympy_helpers import (
 def test_public_api_exports() -> None:
     assert set(__all__) == {
         "create_mean_symbol",
+        "create_mean_symbols",
         "create_perturbation_symbol",
+        "create_perturbation_symbols",
+        "create_subscripted_symbol",
+        "create_subscripted_symbols",
         "get_coefficients_of",
         "linearize",
     }
