@@ -19,6 +19,8 @@ def test_public_api_exports() -> None:
         "create_perturbation_symbols",
         "create_subscripted_symbol",
         "create_subscripted_symbols",
+        "display_symbol_dict",
+        "format_symbol_dict",
         "get_coefficients_of",
         "linearize",
     }

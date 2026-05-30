@@ -1,6 +1,7 @@
 """Higher-level utilities for SymPy-based symbolic algebra."""
 
 from sympy_helpers.coefficients import get_coefficients_of
+from sympy_helpers.display import display_symbol_dict, format_symbol_dict
 from sympy_helpers.linearization import linearize
 from sympy_helpers.symbols import (
     create_mean_symbol,
@@ -18,6 +19,8 @@ __all__ = [
     "create_perturbation_symbols",
     "create_subscripted_symbol",
     "create_subscripted_symbols",
+    "display_symbol_dict",
+    "format_symbol_dict",
     "get_coefficients_of",
     "linearize",
 ]
