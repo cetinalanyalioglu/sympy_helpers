@@ -11,7 +11,7 @@ def test_format_symbol_dict_renders_perturbation_values_in_latex() -> None:
 
     latex = format_symbol_dict(create_perturbation_symbols([x, y]))
 
-    assert latex == r"\left\{ \text{'x'}: x', \text{'y'}: y' \right\}"
+    assert latex == r"\left\{ \mathrm{x}: x', \mathrm{y}: y' \right\}"
 
 
 def test_format_symbol_dict_renders_mean_values_in_latex() -> None:
@@ -19,7 +19,7 @@ def test_format_symbol_dict_renders_mean_values_in_latex() -> None:
 
     latex = format_symbol_dict(create_mean_symbols([x]))
 
-    assert latex == r"\left\{ \text{'x'}: \overline{x} \right\}"
+    assert latex == r"\left\{ \mathrm{x}: \overline{x} \right\}"
 
 
 def test_format_symbol_dict_handles_empty_mapping() -> None:
@@ -32,4 +32,12 @@ def test_format_symbol_dict_accepts_symbol_keys() -> None:
 
     latex = format_symbol_dict({x: expr.coeff(x), y: expr.coeff(y)})
 
-    assert latex == r"\left\{ \text{'x'}: 2, \text{'y'}: 3 \right\}"
+    assert latex == r"\left\{ x: 2, y: 3 \right\}"
+
+
+def test_format_symbol_dict_can_render_plain_text_values() -> None:
+    x, y = sp.symbols("x y")
+
+    latex = format_symbol_dict(create_perturbation_symbols([x, y]), latex_values=False)
+
+    assert latex == r"\left\{ \mathrm{x}: x', \mathrm{y}: y' \right\}"
