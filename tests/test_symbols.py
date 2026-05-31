@@ -41,6 +41,46 @@ def test_create_mean_symbols_returns_name_mapping() -> None:
     assert mean_symbols["y"].name == r"\overline{y}"
 
 
+def _example_symbol_mapping() -> dict[str, sp.Symbol]:
+    return {
+        "rho": sp.Symbol(r"\rho", real=True, positive=True),
+        "u": sp.Symbol("u", real=True),
+        "p": sp.Symbol("p", real=True, positive=True),
+        "cp": sp.Symbol("c_p", real=True),
+    }
+
+
+def test_create_mean_symbols_accepts_symbol_mapping() -> None:
+    symbols = _example_symbol_mapping()
+
+    mean_symbols = create_mean_symbols(symbols)
+
+    assert set(mean_symbols.keys()) == set(symbols.keys())
+    assert mean_symbols["rho"].name == r"\overline{\rho}"
+    assert mean_symbols["cp"].name == r"\overline{c_p}"
+    assert mean_symbols["rho"].is_positive is True
+
+
+def test_create_perturbation_symbols_accepts_symbol_mapping() -> None:
+    symbols = _example_symbol_mapping()
+
+    perturbations = create_perturbation_symbols(symbols)
+
+    assert set(perturbations.keys()) == set(symbols.keys())
+    assert perturbations["rho"].name == r"\rho'"
+    assert perturbations["cp"].name == r"c_p'"
+
+
+def test_create_subscripted_symbols_accepts_symbol_mapping() -> None:
+    symbols = _example_symbol_mapping()
+
+    subscripted = create_subscripted_symbols(symbols, "0")
+
+    assert set(subscripted.keys()) == set(symbols.keys())
+    assert subscripted["rho"].name == r"\rho_0"
+    assert subscripted["cp"].name == r"c_p_0"
+
+
 def test_create_perturbation_symbol_uses_default_suffix() -> None:
     x = sp.Symbol("x")
 

@@ -1,5 +1,8 @@
 """Symbol creation helpers."""
 
+from collections.abc import Mapping, Sequence
+from typing import Union
+
 import sympy as sp
 
 _LATEX_PERTURBATION_SUFFIXES = {
@@ -7,6 +10,16 @@ _LATEX_PERTURBATION_SUFFIXES = {
     "_tilde": r"\tilde{{{}}}",
     r"\tilde": r"\tilde{{{}}}",
 }
+
+SymbolCollection = Union[Sequence[sp.Symbol], Mapping[str, sp.Symbol]]
+
+
+def _symbol_items(symbols: SymbolCollection):
+    """Yield ``(key, symbol)`` pairs from a symbol list or mapping."""
+    if isinstance(symbols, Mapping):
+        return symbols.items()
+
+    return ((sym.name, sym) for sym in symbols)
 
 
 def create_mean_symbol(sym: sp.Symbol) -> sp.Symbol:
@@ -27,20 +40,21 @@ def create_mean_symbol(sym: sp.Symbol) -> sp.Symbol:
     return sp.Symbol(f"\\overline{{{sym.name}}}", **sym.assumptions0)
 
 
-def create_mean_symbols(symbols):
-    """Create mean symbols for a list of symbols.
+def create_mean_symbols(symbols: SymbolCollection):
+    """Create mean symbols for a list or mapping of symbols.
 
     Parameters
     ----------
-    symbols : list of sympy.Symbol
-        Symbols to create mean symbols for
+    symbols : list or dict[str, sympy.Symbol]
+        Symbols to create mean symbols for. When a mapping is given, output keys
+        match the mapping keys (e.g. ``"rho"`` for ``Symbol("\\\\rho")``).
 
     Returns
     -------
     dict[str, sympy.Symbol]
-        Mapping from original symbol names to mean symbols
+        Mapping from keys to mean symbols
     """
-    return {sym.name: create_mean_symbol(sym) for sym in symbols}
+    return {key: create_mean_symbol(sym) for key, sym in _symbol_items(symbols)}
 
 
 def create_perturbation_symbol(sym, suffix="'"):
@@ -66,22 +80,23 @@ def create_perturbation_symbol(sym, suffix="'"):
     return sp.Symbol(sym.name + suffix, real=True)
 
 
-def create_perturbation_symbols(symbols, suffix="'"):
-    """Create perturbation symbols for a list of symbols.
+def create_perturbation_symbols(symbols: SymbolCollection, suffix="'"):
+    """Create perturbation symbols for a list or mapping of symbols.
 
     Parameters
     ----------
-    symbols : list of sympy.Symbol
-        Symbols to create perturbation symbols for
+    symbols : list or dict[str, sympy.Symbol]
+        Symbols to create perturbation symbols for. When a mapping is given,
+        output keys match the mapping keys.
     suffix : str, optional
         Suffix passed to :func:`create_perturbation_symbol`, by default '\''
 
     Returns
     -------
     dict[str, sympy.Symbol]
-        Mapping from original symbol names to perturbation symbols
+        Mapping from keys to perturbation symbols
     """
-    return {sym.name: create_perturbation_symbol(sym, suffix=suffix) for sym in symbols}
+    return {key: create_perturbation_symbol(sym, suffix=suffix) for key, sym in _symbol_items(symbols)}
 
 
 def create_subscripted_symbol(sym, subscript):
@@ -102,19 +117,20 @@ def create_subscripted_symbol(sym, subscript):
     return sp.Symbol(f"{sym.name}_{subscript}", **sym.assumptions0)
 
 
-def create_subscripted_symbols(symbols, subscript):
-    """Create subscripted symbols for a list of symbols.
+def create_subscripted_symbols(symbols: SymbolCollection, subscript):
+    """Create subscripted symbols for a list or mapping of symbols.
 
     Parameters
     ----------
-    symbols : list of sympy.Symbol
-        Symbols to subscript
+    symbols : list or dict[str, sympy.Symbol]
+        Symbols to subscript. When a mapping is given, output keys match the
+        mapping keys.
     subscript : str
         Subscript to append, e.g. "0" gives x_0 from x
 
     Returns
     -------
     dict[str, sympy.Symbol]
-        Mapping from original symbol names to subscripted symbols
+        Mapping from keys to subscripted symbols
     """
-    return {sym.name: create_subscripted_symbol(sym, subscript) for sym in symbols}
+    return {key: create_subscripted_symbol(sym, subscript) for key, sym in _symbol_items(symbols)}
