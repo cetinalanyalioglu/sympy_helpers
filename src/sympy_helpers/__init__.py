@@ -3,6 +3,7 @@
 from sympy_helpers.coefficients import get_coefficients_of
 from sympy_helpers.display import display_symbol_dict, format_symbol_dict
 from sympy_helpers.linearization import linearize
+from sympy_helpers.substitutions import substitute_expressions
 from sympy_helpers.symbols import (
     create_mean_symbol,
     create_mean_symbols,
@@ -23,4 +24,5 @@ __all__ = [
     "format_symbol_dict",
     "get_coefficients_of",
     "linearize",
+    "substitute_expressions",
 ]

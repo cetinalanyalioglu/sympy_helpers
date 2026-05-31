@@ -23,6 +23,7 @@ def test_public_api_exports() -> None:
         "format_symbol_dict",
         "get_coefficients_of",
         "linearize",
+        "substitute_expressions",
     }
 
 
