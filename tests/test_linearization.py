@@ -55,11 +55,10 @@ def test_linearize_strict_raises_for_missing_variable() -> None:
         linearize(x**2, [y], strict=True)
 
 
-def test_linearize_non_strict_warns_for_missing_variable() -> None:
+def test_linearize_non_strict_ignores_missing_variable() -> None:
     x, y = sp.symbols("x y")
 
-    with pytest.warns(UserWarning, match="Variable y not found in expression"):
-        result = linearize(x**2, [y], strict=False)
+    result = linearize(x**2, [y], strict=False)
 
     assert result == 0
 

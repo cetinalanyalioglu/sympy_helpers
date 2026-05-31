@@ -1,7 +1,5 @@
 """Expression linearization helpers."""
 
-import warnings
-
 from sympy_helpers.symbols import create_mean_symbol, create_perturbation_symbol
 
 
@@ -35,12 +33,8 @@ def linearize(expr, vars, remove_mean=True, strict=True):
 
     # Check if all requested variables appear in the expression (avoid typing errors)
     for var in vars:
-        if var not in expr.free_symbols:
-            if strict:
-                raise ValueError
-            else:
-                # Only display a warning
-                warnings.warn(f"Variable {var} not found in expression {expr}")
+        if var not in expr.free_symbols and strict:
+            raise ValueError
 
     # Check if all variables are simple (e.g. only one free symbol)
     if not all([len(var.free_symbols) == 1 for var in vars]):
